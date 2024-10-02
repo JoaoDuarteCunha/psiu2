@@ -1,0 +1,22 @@
+{% load static %} 
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta charset="UTF-8"> 
+<title>Lista Atividades</title> 
+</head> 
+<body>
+    {% include 'psiuApp/header.html' %} 
+    <h1>Lista de Atividades</h1> 
+    <table> 
+        <tr><th>Nome</th><th>Atividade</th>
+        {% for atividade in atividades %} 
+            <tr> 
+                <td>{{ atividade.nome }}</td><td>{{atividade.atividade }}</td><td>{{ atividade.vagas }}</td> 
+           </tr> 
+        {% empty %} 
+            <tr><th colspan="5">Ainda não tem atividades cadastradas</th></tr> 
+        {% endfor %} 
+    </table> 
+</body> 
+</html> 
