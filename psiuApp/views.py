@@ -1,6 +1,8 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic.base import View 
+from psiuApp.forms import AtividadeModel2Form
 from psiuApp.models import Atividade
 
 # Create your views here.
@@ -20,3 +22,16 @@ class AtividadeListView(View):
             request,  
             'psiuApp/listaAtividades.html',  
             contexto) 
+
+class AtividadeCreateView(View): 
+    def get(self, request, *args, **kwargs): 
+        contexto = { 'formulario': AtividadeModel2Form, } 
+        return render(request, "psiuApp/criaAtividade.html", contexto) 
+
+
+    def post(self, request, *args, **kwargs): 
+        formulario = AtividadeModel2Form(request.POST) 
+        if formulario.is_valid(): 
+            contato = formulario.save() 
+            contato.save() 
+            return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades")) 

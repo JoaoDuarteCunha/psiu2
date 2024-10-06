@@ -6,16 +6,16 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity
  </head> 
 <body> 
- 
+  {% include 'psiuApp/header.html' %}  
  <div class="container text-center"> 
     <h1>Home Page</h1> 
  </div> 
  
- <form action='{% url 'segunda' %}'> 
+ <form action="{% url 'psiuApp:segunda' %}"> 
    <input type='submit' value='Outra página...' class='btn btn-success'/> 
  </form> 
 
- <img src="{% static 'img/psiuApp/Figure_1.png' %}"> 
+ <img src="{% static 'psiuApp/img/Figure_1.png' %}"> 
 
 </body> 
 </html> 
