@@ -1,9 +1,12 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.base import View 
 from psiuApp.forms import AtividadeModel2Form
 from psiuApp.models import Atividade
+from django.contrib.auth.forms import UserCreationForm 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required 
 
 # Create your views here.
 def home(request): 
@@ -14,7 +17,8 @@ def segundaPagina(request):
     # processamento antes de mostrar a segunda página 
     return render(request, 'psiuApp/segunda.html') 
 
-class AtividadeListView(View): 
+
+class AtividadeListView(LoginRequiredMixin, View): 
     def get(self, request, *args, **kwargs): 
         atividades = Atividade.objects.all() 
         contexto = { 'atividades': atividades, } 
@@ -62,3 +66,18 @@ class AtividadeDeleteView(View):
         atividade = Atividade.objects.get(pk=pk) 
         atividade.delete() 
         return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades"))
+
+def registro(request): 
+    if request.method == 'POST': 
+        formulario = UserCreationForm(request.POST) 
+        if formulario.is_valid(): 
+            formulario.save() 
+            return redirect('psiuApp:homepage') 
+    else: 
+        formulario = UserCreationForm() 
+        context = {'form': formulario, } 
+        return render(request, 'psiuApp/registro.html', context)
+
+@login_required
+def logout(request): 
+    return render(request, 'psiuApp/logout.html') 
