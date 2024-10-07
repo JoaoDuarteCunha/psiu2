@@ -1,0 +1,23 @@
+{% load static %} 
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta charset="UTF-8"> 
+<title>Atualiza Atividade</title> 
+<link rel="stylesheet" href="{% static 'psiuApp/css/estilo.css' %}"> 
+</head> 
+<body> 
+    {% include 'psiuApp/header.html' %} 
+    <h1>Atualização de atividade</h1> 
+    <form method="POST" class='formulario'> 
+      {% csrf_token %} 
+      <table> 
+        {{ atividade.as_table }} 
+          <tr> 
+            <td></td> 
+            <td><input type="submit" value="Atualiza"></td> 
+          </tr> 
+      </table> 
+    </form> 
+  </body> 
+  </html> 

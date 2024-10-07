@@ -12,7 +12,11 @@
         <tr><th>Nome</th><th>Atividade</th>
         {% for atividade in atividades %} 
             <tr> 
-                <td>{{ atividade.nome }}</td><td>{{atividade.atividade }}</td><td>{{ atividade.vagas }}</td> 
+                <td>{{ atividade.nome }}</td>
+                <td>{{atividade.atividade }}</td>
+                <td>{{ atividade.vagas }}</td>
+                <td><a href="{% url 'psiuApp:atualiza-atividade' pk=atividade.id %}">Atualizar</a> |
+                <td><a href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar</a> | 
            </tr> 
         {% empty %} 
             <tr><th colspan="5">Ainda não tem atividades cadastradas</th></tr> 
