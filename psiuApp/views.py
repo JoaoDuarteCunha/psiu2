@@ -7,6 +7,7 @@ from psiuApp.models import Atividade
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required 
+from django.views.generic.edit import UpdateView 
 
 # Create your views here.
 def home(request): 
@@ -77,6 +78,14 @@ def registro(request):
         formulario = UserCreationForm() 
         context = {'form': formulario, } 
         return render(request, 'psiuApp/registro.html', context)
+
+ 
+class PsiuAppUpdateView(UpdateView): 
+  def get(self, request, pk, *args, **kwargs): 
+    if request.user.id == pk: 
+      return super().get(request, pk, args, kwargs) 
+    else: 
+      return redirect('psiuApp:homepage') 
 
 @login_required
 def logout(request): 

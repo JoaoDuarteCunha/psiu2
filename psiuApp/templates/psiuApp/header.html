@@ -12,6 +12,8 @@
     <a href="{% url 'psiuApp:login' %}">Login</a> |
   {% else %}
     <a href="{% url 'psiuApp:logout_usuario' %}">Logout</a> |
+    <a href="{% url 'psiuApp:password_change' %}">Trocar senha</a> |
+    <a href="{% url 'psiuApp:completaDadosUsuario' pk=user.id %}">Terminar registro</a> |
   {% endif %}
     Você é {% firstof user.username "visitante" %} |
   <hr>
