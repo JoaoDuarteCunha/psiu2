@@ -1,26 +1,28 @@
+{% extends 'psiuApp/base.html' %}
 {% load static %} 
-<!DOCTYPE html> 
-<html> 
-<head> 
-<meta charset="UTF-8"> 
-<title>Lista Atividades</title> 
-</head> 
-<body>
-    {% include 'psiuApp/header.html' %} 
-    <h1>Lista de Atividades</h1> 
-    <table> 
-        <tr><th>Nome</th><th>Atividade</th>
-        {% for atividade in atividades %} 
-            <tr> 
-                <td>{{ atividade.nome }}</td>
-                <td>{{atividade.atividade }}</td>
-                <td>{{ atividade.vagas }}</td>
-                <td><a href="{% url 'psiuApp:atualiza-atividade' pk=atividade.id %}">Atualizar</a> |
-                <td><a href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar</a> | 
-           </tr> 
-        {% empty %} 
-            <tr><th colspan="5">Ainda não tem atividades cadastradas</th></tr> 
-        {% endfor %} 
-    </table> 
-</body> 
-</html> 
+
+{% block content %}
+
+<div class="container text-center">
+    <br>
+    <img src="{% static imagem_atividade %}" alt="Imagem da atividade">
+    <h4 class="text-center lh-sm">{{ nomeAtividade }}</h4>
+</div>
+
+<a type="button" class="btn btn-primary" href="{% url 'psiuApp:cria-atividade' tipo=tipoAtividade %}">Criar Nova Atividade</a>
+<table> 
+    <tr><th>Nome</th><th>Atividade</th>
+    {% for atividade in atividades %} 
+        <tr> 
+            <td>{{ atividade.nome }}</td>
+            <td>{{atividade.atividade }}</td>
+            <td>{{ atividade.vagas }}</td>
+            <td><a href="{% url 'psiuApp:atualiza-atividade' pk=atividade.id %}">Atualizar</a> |
+            <td><a href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar</a> | 
+        </tr> 
+    {% empty %} 
+        <tr><th colspan="5">Ainda não tem atividades cadastradas</th></tr> 
+    {% endfor %} 
+</table> 
+
+{% endblock %}

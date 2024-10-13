@@ -1,10 +1,13 @@
-{% block title %}Logout{% endblock %} 
+{% extends 'psiuApp/base.html' %}
   
 {% block content %} 
-  <h2>Página de Logout</h2> 
-  <form method="post"  
-        action="{% url 'psiuApp:logout' %}"> 
-    {% csrf_token %} 
-    <input type="submit" value="Logout"> 
-  </form> 
+  {% include 'psiuApp/greeting_psiu.html ' %}
+  <h4 class="text-center lh-sm">Deseja realmente sair?</h4>
+  <div class="container text-center">
+    <form method="post"  
+          action="{% url 'psiuApp:logout' %}"> 
+      {% csrf_token %} 
+      <button type="submit" class="btn btn-warning ">Sair</button>
+    </form> 
+  </div>
 {% endblock %}

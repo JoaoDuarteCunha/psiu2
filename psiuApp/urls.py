@@ -7,13 +7,13 @@ from django.contrib.auth.models import User
 app_name = "psiuApp"
 
 urlpatterns = [
-    path('cria/', views.AtividadeCreateView.as_view(), name='cria-atividade'),
-    path('listaAtividades/', views.AtividadeListView.as_view(), name='lista-atividades'), 
+    path('criaAtividade/<str:tipo>', views.AtividadeCreateView.as_view(), name='cria-atividade'),
+    path('listaAtividades/<str:tipo>', views.AtividadeListView.as_view(), name='lista-atividades'), 
     path('atualiza/<int:pk>/', views.AtividadeUpdateView.as_view(), name='atualiza-atividade'),
     path('apaga/<int:pk>/', views.AtividadeDeleteView.as_view(), name='apaga-atividade'), 
     path('', views.home, name='homepage'), 
     path('segunda/', views.segundaPagina, name='segunda'),
-
+    
     #Autenticação
     path('registro/', views.registro, name='registro'),
     path('login/', LoginView.as_view(template_name='psiuApp/login.html', next_page=reverse_lazy('psiuApp:homepage')), name='login'),

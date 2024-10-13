@@ -1,21 +1,55 @@
+{% extends 'psiuApp/base.html' %}
 {% load static %} 
 
-<!DOCTYPE html> 
-<html> 
- <head> 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity
- </head> 
-<body> 
-  {% include 'psiuApp/header.html' %}  
- <div class="container text-center"> 
-    <h1>Home Page</h1> 
- </div> 
- 
- <form action="{% url 'psiuApp:segunda' %}"> 
-   <input type='submit' value='Outra página...' class='btn btn-success'/> 
- </form> 
+{% block content %}
+{% include 'psiuApp/greeting_psiu.html ' %}
+<h4 class="text-center lh-sm">O que você está procurando hoje?</h4>
+<br>
+<div class="container text-center">
 
- <img src="{% static 'psiuApp/img/Figure_1.png' %}"> 
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+        <a class="btn btn-white" href="{% url 'psiuApp:lista-atividades' tipo='carona' %}" role="button"><img src="{% static 'psiuApp/img/carona.png' %}" height="80"></a>
+        <br>Carona
+    </div>
+    <div class="col-1">
+    </div>
+    <div class="col">
+        <a class="btn btn-white" href="{% url 'psiuApp:lista-atividades' tipo='estudos' %}" role="button"><img src="{% static 'psiuApp/img/estudos.png' %}" height="80"></a>
+        <br>Grupo de Estudos
+    </div>
+    <div class="col">
+    </div>
+  </div>
+  <br>
 
-</body> 
-</html> 
+
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+        <a class="btn btn-white" href="{% url 'psiuApp:lista-atividades' tipo='extracurriculares' %}" role="button"><img src="{% static 'psiuApp/img/extracurriculares.png' %}" height="80"></a>
+        <br>Atividades Extracurriculares
+    </div>
+    <div class="col-1">
+    </div>
+    <div class="col">
+        <a class="btn btn-white" href="{% url 'psiuApp:lista-atividades' tipo='ligas' %}" role="button"><img src="{% static 'psiuApp/img/ligas.png' %}" height="80"></a>
+        <br>Ligas Acadêmicas
+    </div>
+    <div class="col">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <a class="btn btn-white" href="{% url 'psiuApp:lista-atividades' tipo='conhecer_pessoas' %}" role="button"><img src="{% static 'psiuApp/img/conhecer_pessoas.png' %}" height="80"></a>
+      <br>Conhecer Pessoas
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

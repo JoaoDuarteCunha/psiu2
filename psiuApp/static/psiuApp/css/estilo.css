@@ -4,6 +4,7 @@
 .helptext { 
     font-size: 10px; 
 } 
+
 /* Lista de erros no formulário */ 
 .errorlist { 
     color: #FF0000;  
@@ -13,4 +14,35 @@
 .formulario th { 
     text-align: right;  
     vertical-align: text-top; 
-} 
+}
+
+body {
+    background-color: #00FFFF;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+.logo {
+    max-width: 10%;
+  }
+
+.logo_navbar {
+    max-width: 5%;
+}
+
+/* Style buttons */
+.btn {
+    cursor: pointer; /* Mouse pointer on hover */
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+    background-color: #00d0ff;
+}
+
+h2.negrito {
+    font-weight: bold;
+}
+
+div.tam-formulario {
+    max-width: 500px;
+}

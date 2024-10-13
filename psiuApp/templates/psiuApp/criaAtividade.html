@@ -1,22 +1,18 @@
+{% extends 'psiuApp/base.html' %} 
 {% load static %} 
-<!DOCTYPE html> 
-<html> 
-<head> 
- <title>Cria Atividade</title>
- <link rel="stylesheet"  
-  href="{% static 'psiuApp/css/estilo.css' %}">
-</head> 
-<body> 
- {% include 'psiuApp/header.html' %} 
- <h1>Cria uma atividade</h1> 
- <form action="" method="POST"> 
-  <fieldset style="width: max-content;"> 
-   <legend>Formulário de Atividade</legend> 
-   {% csrf_token %} 
-   <table class='formulario'> 
-    {{ formulario.as_table }} 
-   </table> 
-   <button type="submit">Cria atividade</button> 
-  </fieldset> 
- </form> 
-</body>
+
+{% block content %} 
+
+<h1>Cria uma atividade</h1> 
+<form action="" method="POST"> 
+<fieldset style="width: max-content;"> 
+  <legend>Formulário de Atividade</legend> 
+  {% csrf_token %} 
+  <table class='formulario'> 
+  {{ formulario.as_table }} 
+  </table> 
+  <button type="submit">Cria atividade</button> 
+</fieldset> 
+</form> 
+
+{% endblock %}
