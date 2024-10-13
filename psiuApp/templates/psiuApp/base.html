@@ -56,8 +56,9 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                   <a class="dropdown-item disabled" style='color:gray'>Olá, {{ user.username }}!</a>
-                  <a class="dropdown-item" href="#">Meu Perfil</a>
-                  <a class="dropdown-item" href="#">Minhas Atividades</a>
+                  <a class="dropdown-item" href="{% url 'psiuApp:perfil' pk=user.id %}">Meu Perfil</a>
+                  <a class="dropdown-item" href="{% url 'psiuApp:editar-perfil' pk=user.id %}">Alterar Dados</a>
+                  <a class="dropdown-item" href="{% url 'psiuApp:trocar_senha' %}">Alterar Senha</a>
                   <a class="dropdown-item" href="{% url 'psiuApp:logout_usuario' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>  Logout</a>
                 </div>
               </li>

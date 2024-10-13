@@ -9,20 +9,16 @@
     <h4 class="text-center lh-sm">{{ nomeAtividade }}</h4>
 </div>
 
-<a type="button" class="btn btn-primary" href="{% url 'psiuApp:cria-atividade' tipo=tipoAtividade %}">Criar Nova Atividade</a>
-<table> 
-    <tr><th>Nome</th><th>Atividade</th>
-    {% for atividade in atividades %} 
-        <tr> 
-            <td>{{ atividade.nome }}</td>
-            <td>{{atividade.atividade }}</td>
-            <td>{{ atividade.vagas }}</td>
-            <td><a href="{% url 'psiuApp:atualiza-atividade' pk=atividade.id %}">Atualizar</a> |
-            <td><a href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar</a> | 
-        </tr> 
-    {% empty %} 
-        <tr><th colspan="5">Ainda não tem atividades cadastradas</th></tr> 
-    {% endfor %} 
-</table> 
-
+<a type="button" class="btn btn-primary ml-3" href="{% url 'psiuApp:cria-atividade' tipo=tipoAtividade %}">Criar Nova Atividade</a>
+<br>
+<br>
+<div class="text-center">
+    <div class="card-columns">
+        {% for atividade in atividades %} 
+                {% include 'psiuApp/cards_personalizados.html' %}
+        {% empty %} 
+            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
+        {% endfor %} 
+    </div>
+</div>
 {% endblock %}

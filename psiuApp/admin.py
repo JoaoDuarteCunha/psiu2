@@ -4,4 +4,4 @@ from django.contrib import admin
  
 from psiuApp.models import Atividade 
  
-admin.site.register(Atividade) 
+admin.site.register(Atividade)

@@ -14,4 +14,12 @@ class AtividadeModel2Form(forms.ModelForm):
     ) 
     class Meta: 
         model = Atividade 
-        fields = '__all__' 
+        fields = ['adicionais', 'vagas', 'dataHora']
+
+class CaronaModel2Form(AtividadeModel2Form):
+    localSaida = forms.DateField( 
+        label='Local de saída',
+        required=True,
+    ) 
+    class Meta(AtividadeModel2Form.Meta): 
+        fields = ['localSaida', 'localChegada']

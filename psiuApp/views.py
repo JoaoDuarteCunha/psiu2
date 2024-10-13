@@ -2,12 +2,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.base import View 
-from psiuApp.forms import AtividadeModel2Form
+from psiuApp.forms import AtividadeModel2Form, CaronaModel2Form
 from psiuApp.models import Atividade
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required 
 from django.views.generic.edit import UpdateView 
+from django.contrib.auth.models import User
 
 listaAtividades = ['carona', 'estudos', 'ligas', 'extracurriculares', 'conhecer_pessoas']
 nomeAtividade = {'carona': 'Carona', 
@@ -16,14 +17,46 @@ nomeAtividade = {'carona': 'Carona',
                  'extracurriculares': 'Atividades Extracurriculares', 
                  'conhecer_pessoas': 'Conhecer Pessoas'}
 
+def tipoAtividade(tipo: str):
+    if tipo == 'carona':
+        return CaronaModel2Form
+    
+    return AtividadeModel2Form
+
 # Create your views here.
 def home(request): 
     # processamento antes de mostrar a home page 
     return render(request, 'psiuApp/home.html') 
 
-def segundaPagina(request): 
-    # processamento antes de mostrar a segunda página 
-    return render(request, 'psiuApp/segunda.html') 
+class AtividadeView(View): 
+    def get(self, request, pk, *args, **kwargs): 
+        
+        if pk not in listaAtividades:
+            return redirect('psiuApp:homepage') 
+        contexto = { 'atividades': 'nada',} 
+
+        return render( 
+            request,  
+            'psiuApp/atividade.html',  
+            contexto) 
+
+class PerfilView(View): 
+    def get(self, request, pk, *args, **kwargs): 
+        
+        #Verifica se esse usuário existe
+        try:
+            perfil = User.objects.get(pk=pk) 
+        except:
+            return redirect('psiuApp:homepage')
+        
+        atividades = Atividade.objects.filter(criador=pk)
+
+        contexto = { 'atividades': atividades, 'perfil': perfil,} 
+
+        return render( 
+            request,  
+            'psiuApp/perfil.html',  
+            contexto) 
 
 
 class AtividadeListView(View): 
@@ -47,11 +80,11 @@ class AtividadeCreateView(LoginRequiredMixin, View):
         if tipo not in listaAtividades:
             return redirect('psiuApp:homepage') 
         
-        contexto = { 'formulario': AtividadeModel2Form, } 
+        contexto = { 'formulario': tipoAtividade(tipo), } 
         return render(request, "psiuApp/criaAtividade.html", contexto) 
     
     def post(self, request, tipo, *args, **kwargs):
-        formulario = AtividadeModel2Form(request.POST) 
+        formulario = tipoAtividade(tipo)(request.POST) 
         if formulario.is_valid():
             atividade = formulario.save()
             atividade.tipo = tipo
@@ -67,7 +100,7 @@ class AtividadeUpdateView(View):
         context = {'atividade': formulario, } 
         return render(request, 'psiuApp/atualizaAtividade.html', context) 
      
-    def post(self, request, pk, *args, **kwargs): 
+    def post(self, request, pk, *args, **kwargs):
         atividade = get_object_or_404(Atividade, pk=pk) 
         formulario = AtividadeModel2Form(request.POST, instance=atividade) 
         if formulario.is_valid(): 

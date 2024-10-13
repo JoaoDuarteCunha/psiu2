@@ -1,0 +1,70 @@
+{% extends 'psiuApp/base.html' %}
+{% load static %} 
+
+{% block content %}
+
+<div class="container text-center">
+    <br>
+    <h4 class="text-center lh-sm">Atividades de {{ perfil.username }}</h4>
+</div>
+
+<br>
+<br>
+<div class="text-center">
+    <h4 class="lh-sm">Caronas</h4>
+    <div class="card-columns">
+        {% for atividade in atividades %}
+            {% if atividade.tipo == 'carona' %}
+                {% include 'psiuApp/cards_personalizados.html' %}
+            {% endif %}
+        {% empty %} 
+            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
+        {% endfor %}
+    </div>
+
+    <h4 class="lh-sm">Grupos de Estudos</h4>
+    <div class="card-columns">
+        {% for atividade in atividades %}
+            {% if atividade.tipo == 'estudos' %}
+                {% include 'psiuApp/cards_personalizados.html' %}
+            {% endif %}
+        {% empty %} 
+            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
+        {% endfor %}
+    </div>
+
+    <h4 class="lh-sm">Atividades Extracurriculares</h4>
+    <div class="card-columns">
+        {% for atividade in atividades %}
+            {% if atividade.tipo == 'extracurriculares' %}
+                {% include 'psiuApp/cards_personalizados.html' %}
+            {% endif %}
+        {% empty %} 
+            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
+        {% endfor %}
+    </div>
+
+    <h4 class="lh-sm">Ligas Acadêmicas</h4>
+    <div class="card-columns">
+        {% for atividade in atividades %}
+            {% if atividade.tipo == 'ligas' %}
+                {% include 'psiuApp/cards_personalizados.html' %}
+            {% endif %}
+        {% empty %} 
+            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
+        {% endfor %}
+    </div>
+
+    <h4 class="lh-sm">Conhecer Pessoas</h4>
+    <div class="card-columns">
+        {% for atividade in atividades %}
+            {% if atividade.tipo == 'conhecer_pessoas' %}
+                {% include 'psiuApp/cards_personalizados.html' %}
+            {% endif %}
+        {% empty %} 
+            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

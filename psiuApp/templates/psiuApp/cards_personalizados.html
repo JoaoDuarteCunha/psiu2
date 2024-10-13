@@ -1,0 +1,57 @@
+{% if atividade.tipo == 'carona' %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Destino: {{ atividade.localChegada }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Saindo de: {{ atividade.localSaida }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <a href="#" class="btn btn-primary">Mais informações</a>
+        </div>
+    </div>
+
+{% elif atividade.tipo == 'estudos' %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Matéria: {{ atividade.materia }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.local }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <a href="#" class="btn btn-primary">Mais informações</a>
+        </div>
+    </div>
+
+{% elif atividade.tipo == 'extracurriculares' %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Atividade: {{ atividade.atividade }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.local }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <a href="#" class="btn btn-primary">Mais informações</a>
+        </div>
+    </div>
+
+{% elif atividade.tipo == 'ligas' %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Liga: {{ atividade.nome }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.atividade }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.local }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <a href="#" class="btn btn-primary">Mais informações</a>
+        </div>
+    </div>
+
+{% elif atividade.tipo == 'conhecer_pessoas' %}
+    <div class="card border-dark mb-3" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Tópico: {{ atividade.topico }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.local }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <a href="#" class="btn btn-primary">Mais informações</a>
+        </div>
+    </div>
+
+{% endif %}
