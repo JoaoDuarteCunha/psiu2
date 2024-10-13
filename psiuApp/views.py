@@ -2,13 +2,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.base import View 
-from psiuApp.forms import AtividadeModel2Form, CaronaModel2Form
+from psiuApp.forms import CaronaModel2Form, EstudosModel2Form, ExtracurricularesModel2Form, ConhecerPessoasModel2Form, LigasModel2Form
 from psiuApp.models import Atividade
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required 
 from django.views.generic.edit import UpdateView 
 from django.contrib.auth.models import User
+from psiuApp.models import Carona, Estudos, Extracurriculares, ConhecerPessoas, Liga, ParticipaAtividade
 
 listaAtividades = ['carona', 'estudos', 'ligas', 'extracurriculares', 'conhecer_pessoas']
 nomeAtividade = {'carona': 'Carona', 
@@ -17,11 +18,42 @@ nomeAtividade = {'carona': 'Carona',
                  'extracurriculares': 'Atividades Extracurriculares', 
                  'conhecer_pessoas': 'Conhecer Pessoas'}
 
-def tipoAtividade(tipo: str):
+def tipoAtividadeForm(tipo: str):
     if tipo == 'carona':
         return CaronaModel2Form
-    
-    return AtividadeModel2Form
+    elif tipo == 'estudos':
+        return EstudosModel2Form
+    elif tipo == 'extracurriculares':
+        return ExtracurricularesModel2Form
+    elif tipo == 'ligas':
+        return LigasModel2Form
+    elif tipo == 'conhecer_pessoas':
+        return ConhecerPessoasModel2Form
+    return None
+
+def tipoAtividadeModel(tipo: str):
+    if tipo == 'carona':
+        return Carona
+    elif tipo == 'estudos':
+        return Estudos
+    elif tipo == 'extracurriculares':
+        return Extracurriculares
+    elif tipo == 'ligas':
+        return Liga
+    elif tipo == 'conhecer_pessoas':
+        return ConhecerPessoas
+    return None
+
+def get_atividade(pk: int):
+    tipos_atividades = [Carona, Liga, Extracurriculares, Estudos, ConhecerPessoas]
+    for tipo in tipos_atividades:
+        try:
+            atividade = tipo.objects.get(pk=pk) 
+            return atividade
+        except:
+            pass
+        
+    return None
 
 # Create your views here.
 def home(request): 
@@ -31,9 +63,14 @@ def home(request):
 class AtividadeView(View): 
     def get(self, request, pk, *args, **kwargs): 
         
-        if pk not in listaAtividades:
-            return redirect('psiuApp:homepage') 
-        contexto = { 'atividades': 'nada',} 
+        atividade = get_atividade(pk)
+        if atividade is None:
+            return redirect('psiuApp:homepage')
+        
+        participantes = ParticipaAtividade.objects.filter(atividade=atividade)
+        print(participantes)
+
+        contexto = {'atividade': atividade,}
 
         return render( 
             request,  
@@ -64,8 +101,8 @@ class AtividadeListView(View):
         
         if tipo not in listaAtividades:
             return redirect('psiuApp:homepage') 
-
-        atividades = Atividade.objects.filter(tipo=tipo)
+        
+        atividades = tipoAtividadeModel(tipo).objects.all()
         imagem_atividade = 'psiuApp/img/' + tipo + '.png'
         contexto = { 'atividades': atividades, 'tipoAtividade': tipo, 'nomeAtividade': nomeAtividade.get(tipo, 'Não existente'), 'imagem_atividade': imagem_atividade} 
 
@@ -80,11 +117,11 @@ class AtividadeCreateView(LoginRequiredMixin, View):
         if tipo not in listaAtividades:
             return redirect('psiuApp:homepage') 
         
-        contexto = { 'formulario': tipoAtividade(tipo), } 
+        contexto = { 'formulario': tipoAtividadeForm(tipo), } 
         return render(request, "psiuApp/criaAtividade.html", contexto) 
     
     def post(self, request, tipo, *args, **kwargs):
-        formulario = tipoAtividade(tipo)(request.POST) 
+        formulario = tipoAtividadeForm(tipo)(request.POST) 
         if formulario.is_valid():
             atividade = formulario.save()
             atividade.tipo = tipo
@@ -113,14 +150,22 @@ class AtividadeUpdateView(View):
         
 class AtividadeDeleteView(View): 
     def get(self, request, pk, *args, **kwargs): 
-        atividade = Atividade.objects.get(pk=pk) 
+        atividade = Atividade.objects.get(pk=pk)
+
+        if atividade.criador != request.user:
+            return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
+
         contexto = { 'atividade': atividade, } 
         return render(request, 'psiuApp/apagaAtividade.html', contexto) 
     
     def post(self, request, pk, *args, **kwargs): 
         atividade = Atividade.objects.get(pk=pk) 
+
+        if atividade.criador != request.user:
+            return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
+
         atividade.delete() 
-        return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades"))
+        return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
 
 def registro(request): 
     if request.method == 'POST': 

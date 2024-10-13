@@ -1,0 +1,26 @@
+{% extends 'psiuApp/base.html' %}
+{% load static %} 
+
+{% block content %}
+
+{{atividade}}
+
+<div>
+Vagas: {{ atividade.vagas }}
+
+{% if user == atividade.criador %}
+    <div>Sou o criador</div>
+    <a type="button" class="btn btn-error ml-3" href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar Atividade</a>
+{% else %}
+    <div>Não sou o criador</div>
+    {% if atividade.vagas > 0 %}
+        <div>Tem vagas</div>
+    {% endif %}
+{% endif %}
+
+<div>
+    Criado por: {{ atividade.criador }}
+</div>
+
+</div>
+{% endblock %}
