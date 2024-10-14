@@ -14,6 +14,7 @@ urlpatterns = [
     path('', views.home, name='homepage'), 
     path('atividade/<int:pk>', views.AtividadeView.as_view(), name='atividade'), 
     path('perfil/<int:pk>', views.PerfilView.as_view(), name='perfil'), 
+    path('participa_atividade/<int:pk>', views.AtividadeParticipaView.as_view(), name='participa-atividade'),
 
     #Autenticação
     path('registro/', views.registro, name='registro'),

@@ -55,6 +55,20 @@ def get_atividade(pk: int):
         
     return None
 
+def get_atividade_type(atividade):
+    atividade = get_atividade(atividade)
+    if type(atividade) == Carona:
+        return 'carona'
+    if type(atividade) == Estudos:
+        return 'estudos'
+    if type(atividade) == Extracurriculares:
+        return 'extracurriculares'
+    if type(atividade) == Liga:
+        return 'ligas'
+    if type(atividade) == ConhecerPessoas:
+        return 'conhecer_pessoas'
+    return None
+
 # Create your views here.
 def home(request): 
     # processamento antes de mostrar a home page 
@@ -67,15 +81,48 @@ class AtividadeView(View):
         if atividade is None:
             return redirect('psiuApp:homepage')
         
-        participantes = ParticipaAtividade.objects.filter(atividade=atividade)
-        print(participantes)
+        #Verifica se o usuário participa da atividade
+        usuario_participa = ParticipaAtividade.objects.filter(atividade=Atividade.objects.get(pk=pk), participante=request.user)
+        if len(usuario_participa) == 0:
+            botaoParticipar = True
+        else:
+            botaoParticipar = False
 
-        contexto = {'atividade': atividade,}
+        #Lista de participantes
+        participantes = ParticipaAtividade.objects.filter(atividade=Atividade.objects.get(pk=pk))
+
+        contexto = {'atividade': atividade, 'botaoParticipar': botaoParticipar, 'participantes': participantes, }
 
         return render( 
             request,  
             'psiuApp/atividade.html',  
             contexto) 
+
+class AtividadeParticipaView(View): 
+    def get(self, request, pk, *args, **kwargs):  
+        atividade = get_atividade(pk)
+        tipo_atividade = get_atividade_type(atividade)
+
+        if atividade is None:
+            return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
+        
+        participantes = ParticipaAtividade.objects.filter(atividade=Atividade.objects.get(pk=pk), participante=request.user)
+
+        if len(participantes) == 0:
+            if atividade.vagas > 0:
+                participacao = ParticipaAtividade(atividade=Atividade.objects.get(pk=pk), participante=request.user)
+                participacao.save()
+
+                atividade.vagas -= 1
+                atividade.save()
+        else:
+            atividade.vagas += len(participantes)
+            atividade.save()
+            for participante in participantes:
+                participante.delete()
+
+        return HttpResponseRedirect(reverse_lazy("psiuApp:atividade", args=[pk,]))
+
 
 class PerfilView(View): 
     def get(self, request, pk, *args, **kwargs): 
@@ -130,25 +177,38 @@ class AtividadeCreateView(LoginRequiredMixin, View):
         
         return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades", args=[tipo,])) 
 
-class AtividadeUpdateView(View): 
-    def get(self, request, pk, *args, **kwargs): 
-        atividade = Atividade.objects.get(pk=pk) 
-        formulario = AtividadeModel2Form(instance=atividade) 
+
+class AtividadeUpdateView(LoginRequiredMixin, View): 
+    def get(self, request, pk, *args, **kwargs):
+        tipo_atividade = get_atividade_type(get_atividade(pk))
+        atividade = tipoAtividadeModel(tipo_atividade).objects.get(pk=pk) 
+
+        if atividade.criador != request.user:
+            return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
+
+        formulario = tipoAtividadeForm(tipo_atividade)(instance=atividade) 
         context = {'atividade': formulario, } 
         return render(request, 'psiuApp/atualizaAtividade.html', context) 
      
     def post(self, request, pk, *args, **kwargs):
-        atividade = get_object_or_404(Atividade, pk=pk) 
-        formulario = AtividadeModel2Form(request.POST, instance=atividade) 
+        tipo_atividade = get_atividade_type(get_atividade(pk))
+        atividade = get_object_or_404(tipoAtividadeModel(tipo_atividade), pk=pk) 
+
+        if atividade.criador != request.user:
+            return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
+        
+        formulario = tipoAtividadeForm(tipo_atividade)(request.POST, instance=atividade) 
+
         if formulario.is_valid(): 
             atividade = formulario.save() # cria uma pessoa com os dados do formulário 
             atividade.save()        # salva uma pessoa no banco de dados 
-            return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades")) 
+            return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades", args=[tipo_atividade,])) 
         else: 
             contexto = {'atividade': formulario, } 
             return render(request, 'psiuApp/atualizaAtividade.html', contexto) 
         
-class AtividadeDeleteView(View): 
+
+class AtividadeDeleteView(LoginRequiredMixin, View): 
     def get(self, request, pk, *args, **kwargs): 
         atividade = Atividade.objects.get(pk=pk)
 

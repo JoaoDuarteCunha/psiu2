@@ -10,16 +10,32 @@ Vagas: {{ atividade.vagas }}
 
 {% if user == atividade.criador %}
     <div>Sou o criador</div>
-    <a type="button" class="btn btn-error ml-3" href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar Atividade</a>
+    <a type="button" class="btn btn-warning ml-3" href="{% url 'psiuApp:atualiza-atividade' pk=atividade.id %}">Editar Atividade</a>
+    <a type="button" class="btn btn-danger ml-3" href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar Atividade</a>
 {% else %}
     <div>Não sou o criador</div>
-    {% if atividade.vagas > 0 %}
+    {% if user.is_authenticated %}
+        {% if botaoParticipar == True %}
+            {% if atividade.vagas > 0 %}
+                <a type="button" class="btn btn-primary ml-3" href="{% url 'psiuApp:participa-atividade' pk=atividade.id %}">Participar</a>
+                <div>Tem vagas</div>
+            {% endif %}
+        {% else %}
+        <a type="button" class="btn btn-danger ml-3" href="{% url 'psiuApp:participa-atividade' pk=atividade.id %}">Cancelar Participação</a>
         <div>Tem vagas</div>
+        {% endif %}
     {% endif %}
 {% endif %}
 
 <div>
     Criado por: {{ atividade.criador }}
+</div>
+
+<div>
+    Participantes: 
+    {% for participante in participantes %}
+        {{ participante.participante.username }}
+    {% endfor %}
 </div>
 
 </div>
