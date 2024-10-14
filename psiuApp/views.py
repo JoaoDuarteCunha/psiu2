@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView 
 from django.contrib.auth.models import User
 from psiuApp.models import Carona, Estudos, Extracurriculares, ConhecerPessoas, Liga, ParticipaAtividade
+from django.contrib.auth import authenticate, login
 
 listaAtividades = ['carona', 'estudos', 'ligas', 'extracurriculares', 'conhecer_pessoas']
 nomeAtividade = {'carona': 'Carona', 
@@ -231,10 +232,17 @@ class AtividadeDeleteView(LoginRequiredMixin, View):
 def registro(request): 
     if request.method == 'POST': 
         formulario = UserCreationForm(request.POST) 
-        if formulario.is_valid(): 
-            formulario.save()
-            return redirect('psiuApp:homepage') 
-    else: 
+        if formulario.is_valid():
+            senha = formulario.cleaned_data.get('password1')
+            username = formulario.save()
+            user = authenticate(request, username=username, password=senha)
+            if user is not None:
+                login(request, user)
+            return redirect('psiuApp:homepage')
+        else:
+            context = {'form': formulario, } 
+            return render(request, 'psiuApp/registro.html', context)
+    else:
         formulario = UserCreationForm() 
         context = {'form': formulario, } 
         return render(request, 'psiuApp/registro.html', context)
