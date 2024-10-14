@@ -5,28 +5,33 @@
             <h5 class="card-title">Destino: {{ atividade.localChegada }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Saindo de: {{ atividade.localSaida }}</h6>
             <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Data: {{ atividade.data }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.hora }}</h6>
         {% elif tipoAtividade == 'estudos' %}
             <h5 class="card-title">Matéria: {{ atividade.materia }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.local }}</h6>
             <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Data: {{ atividade.data }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.hora }}</h6>
         {% elif tipoAtividade == 'extracurriculares' %}
             <h5 class="card-title">Atividade: {{ atividade.atividade }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.local }}</h6>
             <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Data: {{ atividade.data }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.hora }}</h6>
         {% elif tipoAtividade == 'ligas' %}
             <h5 class="card-title">Liga: {{ atividade.nome }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.atividade }}</h6>
             <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.local }}</h6>
             <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Data: {{ atividade.data }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.hora }}</h6>
         {% elif tipoAtividade == 'conhecer_pessoas' %}
             <h5 class="card-title">Tópico: {{ atividade.topico }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Local: {{ atividade.local }}</h6>
             <h6 class="card-subtitle mb-2 text-muted">Vagas: {{ atividade.vagas }}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.dataHora }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Data: {{ atividade.data }}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Horário: {{ atividade.hora }}</h6>
         {% endif %}
         <a href="{% url 'psiuApp:atividade' pk=atividade.id %}" class="btn btn-primary">Mais informações</a>
     </div>

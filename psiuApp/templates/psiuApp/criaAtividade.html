@@ -1,18 +1,20 @@
 {% extends 'psiuApp/base.html' %} 
 {% load static %} 
+{% load crispy_forms_tags %}
 
 {% block content %} 
 
-<h1>Cria uma atividade</h1> 
-<form action="" method="POST"> 
-<fieldset style="width: max-content;"> 
-  <legend>Formulário de Atividade</legend> 
-  {% csrf_token %} 
-  <table class='formulario'> 
-  {{ formulario.as_table }} 
-  </table> 
-  <button type="submit">Cria atividade</button> 
-</fieldset> 
-</form> 
-
+<div class="container text-center">
+  <br>
+  <img src="{% static imagem_atividade %}" alt="Imagem da atividade">
+  <h4 class="text-center lh-sm">Criação de atividade: {{ nomeAtividade }}</h4>
+</div>
+<br>
+<div class="container text-center tam-formulario">
+  <form action="" method="POST" class="text-center"> 
+    {% csrf_token %} 
+    {{ formulario|crispy }} 
+    <button type="submit" class="btn btn-success ">Cria Atividade</button>
+  </form> 
+</div>
 {% endblock %}

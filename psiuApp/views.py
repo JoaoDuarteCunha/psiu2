@@ -82,11 +82,11 @@ class AtividadeView(View):
             return redirect('psiuApp:homepage')
         
         #Verifica se o usuário participa da atividade
-        usuario_participa = ParticipaAtividade.objects.filter(atividade=Atividade.objects.get(pk=pk), participante=request.user)
-        if len(usuario_participa) == 0:
-            botaoParticipar = True
-        else:
-            botaoParticipar = False
+        botaoParticipar = False
+        if request.user.is_authenticated:
+            usuario_participa = ParticipaAtividade.objects.filter(atividade=Atividade.objects.get(pk=pk), participante=request.user)
+            if len(usuario_participa) == 0:
+                botaoParticipar = True
 
         #Lista de participantes
         participantes = ParticipaAtividade.objects.filter(atividade=Atividade.objects.get(pk=pk))
@@ -164,14 +164,15 @@ class AtividadeCreateView(LoginRequiredMixin, View):
         if tipo not in listaAtividades:
             return redirect('psiuApp:homepage') 
         
-        contexto = { 'formulario': tipoAtividadeForm(tipo), } 
+        imagem_atividade = 'psiuApp/img/' + tipo + '.png'
+        contexto = { 'formulario': tipoAtividadeForm(tipo), 'nomeAtividade': nomeAtividade.get(tipo, 'Não existente'), 'imagem_atividade': imagem_atividade} 
         return render(request, "psiuApp/criaAtividade.html", contexto) 
     
     def post(self, request, tipo, *args, **kwargs):
-        formulario = tipoAtividadeForm(tipo)(request.POST) 
+        formulario = tipoAtividadeForm(tipo)(request.POST)
         if formulario.is_valid():
             atividade = formulario.save()
-            atividade.tipo = tipo
+            atividade.criador = request.user
             atividade.save() 
             return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades", args=[tipo,])) 
         

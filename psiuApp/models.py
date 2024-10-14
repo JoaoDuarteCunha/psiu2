@@ -6,35 +6,33 @@ class Atividade(models.Model):
   id = models.AutoField(primary_key=True)
 
   #Todas as atividades
-  criador = models.ForeignKey(User, on_delete=models.CASCADE)
-  dataHora = models.DateTimeField(auto_now_add=False, blank=True, null=True)
-  vagas = models.IntegerField(default=4,null=True)
-  local = models.CharField(max_length=30,blank=True)
+  criador = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+  vagas = models.IntegerField(default=4)
+  adicionais = models.CharField(verbose_name='Observações', max_length=254, blank=True, default='')
+  data = models.DateField(auto_now_add=False)
+  hora = models.TimeField(auto_now_add=False)
 
 class Carona(Atividade):
-  localSaida = models.CharField(verbose_name='Local de Saída', max_length=30,null=True, blank=True)
-  localChegada = models.CharField(max_length=30,null=True, blank=True)
-
-  def get_classe(Carona):
-    return 'Carona'
-
+  localSaida = models.CharField(verbose_name='Saindo de', max_length=30)
+  localChegada = models.CharField(verbose_name='Destino', max_length=30)
 
 class Extracurriculares(Atividade):
-  atividade = models.CharField(max_length=30,blank=True)
-  adicionais = models.CharField(max_length=254, blank=True, default='')
-
+  atividade = models.CharField(max_length=30)
+  local = models.CharField(max_length=30)
 
 class Estudos(Atividade):
-  materia = models.CharField(max_length=10,blank=True)
+  materia = models.CharField(verbose_name='Disciplina', max_length=10)
+  local = models.CharField(max_length=30)
 
 class Liga(Atividade):
-  nome = models.CharField(max_length=30,blank=True)
-
+  nome = models.CharField(verbose_name='Nome da Liga', max_length=30)
+  local = models.CharField(max_length=30)
 
 class ConhecerPessoas(Atividade):
-  atividade = models.CharField(max_length=30,blank=True)
-
+  atividade = models.CharField(max_length=30)
+  local = models.CharField(max_length=30)
 
 class ParticipaAtividade(models.Model):
   participante = models.ForeignKey(User, on_delete=models.CASCADE)
   atividade = models.ForeignKey(Atividade, on_delete=models.CASCADE)
+  local = models.CharField(max_length=30)
