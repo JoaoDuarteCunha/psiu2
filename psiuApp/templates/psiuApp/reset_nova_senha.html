@@ -1,0 +1,24 @@
+{% extends 'psiuApp/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Nova Senha{% endblock %} 
+{% block content %} 
+
+{% include 'psiuApp/greeting_psiu.html' %}
+{% if validlink %} 
+    <h4 class="text-center lh-sm">Digite sua nova senha!</h4>
+    <div class="container text-center tam-formulario">
+        <form method="post"> 
+            {% csrf_token %} 
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success ">Confirmar</button>
+        </form>
+    </div>
+{% else %} 
+    <br>
+    <div class="text-center">
+        <p>Pedido inválido ou link expirado</p> 
+    </div>
+{% endif %}
+{% endblock %} 

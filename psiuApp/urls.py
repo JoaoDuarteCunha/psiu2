@@ -3,6 +3,8 @@ from django.urls.conf import path
 from psiuApp import views
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
 from django.contrib.auth.models import User 
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView 
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView 
 
 app_name = "psiuApp"
 
@@ -26,5 +28,18 @@ urlpatterns = [
     path('trocar_senha_finalizado/',PasswordChangeDoneView.as_view(template_name='psiuApp/trocar_senha_finalizado.html', ), name='trocar_senha_finalizado'), 
     path('editar_perfil/<int:pk>/', views.PsiuAppUpdateView.as_view(template_name='psiuApp/editar_perfil.html', 
                                                                    success_url=reverse_lazy('psiuApp:homepage'), model=User, fields=['first_name', 'last_name', 'email',], ), 
-                                                                   name='editar-perfil'), 
+                                                                   name='editar-perfil'),
+
+    path('reset_password/', PasswordResetView.as_view(
+        template_name='psiuApp/reset_senha.html',
+        email_template_name='psiuApp/password_reset_email.html',
+        success_url=reverse_lazy('psiuApp:password_reset_done'),
+        #html_email_template_name='psiuApp/password_reset_email.html',
+        subject_template_name='psiuApp/password_reset_subject.txt',
+        from_email='noreply@psiuapp.com.br',
+    ), name='reset_password'), 
+    path('reset_password_sent/', PasswordResetDoneView.as_view(template_name='psiuApp/reset_senha_enviado.html',), name='password_reset_done'), 
+    path('reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(template_name='psiuApp/reset_nova_senha.html',  
+                                                                                            success_url=reverse_lazy('psiuApp:password_reset_complete'),), name='password_reset_confirm'), 
+    path('reset_password_complete/', PasswordResetCompleteView.as_view(template_name='psiuApp/reset_completo.html'), name='password_reset_complete'), 
 ] 

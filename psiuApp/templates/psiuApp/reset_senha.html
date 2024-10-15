@@ -1,0 +1,18 @@
+{% extends 'psiuApp/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Recuperar Senha{% endblock %} 
+{% block content %} 
+
+{% include 'psiuApp/greeting_psiu.html' %}
+<h4 class="text-center lh-sm">Recupere sua senha!</h4>
+<div class="container text-center tam-formulario">
+    <form method="post"> 
+        {% csrf_token %} 
+        {{ form|crispy }} 
+        <button type="submit" class="btn btn-success ">Recuperar senha</button>
+        </table> 
+    </form> 
+</div>
+{% endblock %} 

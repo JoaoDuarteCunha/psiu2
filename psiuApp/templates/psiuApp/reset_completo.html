@@ -1,0 +1,14 @@
+{% extends 'psiuApp/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Senha Nova Criada{% endblock %} 
+{% block content %} 
+
+{% include 'psiuApp/greeting_psiu.html' %}
+<h4 class="text-center lh-sm">Sua nova senha foi criada!</h4>
+<br>
+<div class="container text-center">
+    <a type="button" class="btn btn-success ml-3" href="{% url 'psiuApp:login' %}">Fazer Login</a> 
+</div>
+{% endblock %} 
