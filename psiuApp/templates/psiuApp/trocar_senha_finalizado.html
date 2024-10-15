@@ -1,8 +1,9 @@
-{% extends 'psiuApp/base.html' %} 
- 
-{% block title %}Senha Atualizada{% endblock %} 
- 
+{% extends 'psiuApp/base.html' %}
+  
 {% block content %} 
-<h2>Troca de senha</h2> 
-<p>Senha trocada com sucesso!</p> 
-{% endblock %} 
+  {% include 'psiuApp/greeting_psiu.html ' %}
+  <h4 class="text-center lh-sm">Senha trocada com sucesso!</h4>
+  <div class="container text-center">
+    <a type="button" class="btn btn-success ml-3" href="{% url 'psiuApp:homepage' %}">Ir para Início</a> 
+  </div>
+{% endblock %}

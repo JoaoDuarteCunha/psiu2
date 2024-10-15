@@ -7,7 +7,7 @@ class Atividade(models.Model):
 
   #Todas as atividades
   criador = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-  vagas = models.IntegerField(default=4)
+  vagas = models.PositiveIntegerField(default=4)
   adicionais = models.CharField(verbose_name='Observações', max_length=254, blank=True, default='')
   data = models.DateField(auto_now_add=False)
   hora = models.TimeField(auto_now_add=False)
@@ -35,4 +35,3 @@ class ConhecerPessoas(Atividade):
 class ParticipaAtividade(models.Model):
   participante = models.ForeignKey(User, on_delete=models.CASCADE)
   atividade = models.ForeignKey(Atividade, on_delete=models.CASCADE)
-  local = models.CharField(max_length=30)

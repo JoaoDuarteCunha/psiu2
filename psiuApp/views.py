@@ -11,6 +11,7 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
 from psiuApp.models import Carona, Estudos, Extracurriculares, ConhecerPessoas, Liga, ParticipaAtividade
 from django.contrib.auth import authenticate, login
+from datetime import datetime
 
 listaAtividades = ['carona', 'estudos', 'ligas', 'extracurriculares', 'conhecer_pessoas']
 nomeAtividade = {'carona': 'Carona', 
@@ -70,14 +71,34 @@ def get_atividade_type(atividade):
         return 'conhecer_pessoas'
     return None
 
+def get_imagem_atividade(tipo: str):
+    return 'psiuApp/img/' + tipo + '.png'
+
+def remove_atividades_expiradas():
+    atividades = Atividade.objects.all()
+
+    for atividade in atividades:
+        datetime_atividade = datetime.combine(atividade.data, atividade.hora)
+        if datetime_atividade < datetime.now():
+            participantes_atividade = ParticipaAtividade.objects.filter(atividade=atividade)
+            for participante in participantes_atividade:
+                participante.delete()
+            atividade.delete()
+
+
 # Create your views here.
 def home(request): 
     # processamento antes de mostrar a home page 
     return render(request, 'psiuApp/home.html') 
 
+def days_hours_minutes(td):
+    return {'dias': td.days, 'horas': td.seconds//3600, 'minutos': (td.seconds//60)%60}
+
 class AtividadeView(View): 
     def get(self, request, pk, *args, **kwargs): 
         
+        remove_atividades_expiradas()
+
         atividade = get_atividade(pk)
         if atividade is None:
             return redirect('psiuApp:homepage')
@@ -91,8 +112,19 @@ class AtividadeView(View):
 
         #Lista de participantes
         participantes = ParticipaAtividade.objects.filter(atividade=Atividade.objects.get(pk=pk))
+        tipo_atividade = get_atividade_type(atividade)
+        
+        datetime_atividade = datetime.combine(atividade.data, atividade.hora)
 
-        contexto = {'atividade': atividade, 'botaoParticipar': botaoParticipar, 'participantes': participantes, }
+        tempo_ate_atividade = datetime_atividade - datetime.now()
+        
+        contexto = {'atividade': atividade, 
+                    'botaoParticipar': botaoParticipar, 
+                    'participantes': participantes, 
+                    'tipoAtividade': tipo_atividade,
+                    'nomeAtividade': nomeAtividade.get(tipo_atividade, 'Não existente'),
+                    'tempoAteAtividade': days_hours_minutes(tempo_ate_atividade),
+                    'imagem_atividade': get_imagem_atividade(tipo_atividade)}
 
         return render( 
             request,  
@@ -134,9 +166,23 @@ class PerfilView(View):
         except:
             return redirect('psiuApp:homepage')
         
-        atividades = Atividade.objects.filter(criador=pk)
+        atividades_criadas = {}
+        for atividade in listaAtividades:
+            atividades_tipo = tipoAtividadeModel(atividade).objects.filter(criador=pk)
+            for ativ in atividades_tipo:
+                ativ.tipo = atividade
 
-        contexto = { 'atividades': atividades, 'perfil': perfil,} 
+            atividades_criadas[atividade] = atividades_tipo
+        
+
+
+        atividades_participa = {}
+        #atividades_participa_dict = ParticipaAtividade.objects.filter(participante=pk)
+        #for atividade in atividades_participa:
+
+        #print(atividades_participa)
+
+        contexto = {'atividades_criadas': atividades_criadas, 'atividades_participa': atividades_participa, 'perfil': perfil,} 
 
         return render( 
             request,  
@@ -147,12 +193,16 @@ class PerfilView(View):
 class AtividadeListView(View): 
     def get(self, request, tipo, *args, **kwargs): 
         
+        remove_atividades_expiradas()
+
         if tipo not in listaAtividades:
             return redirect('psiuApp:homepage') 
         
         atividades = tipoAtividadeModel(tipo).objects.all()
-        imagem_atividade = 'psiuApp/img/' + tipo + '.png'
-        contexto = { 'atividades': atividades, 'tipoAtividade': tipo, 'nomeAtividade': nomeAtividade.get(tipo, 'Não existente'), 'imagem_atividade': imagem_atividade} 
+        for atividade in atividades:
+            atividade.tipo = tipo
+
+        contexto = { 'atividades': atividades, 'tipoAtividade': tipo, 'nomeAtividade': nomeAtividade.get(tipo, 'Não existente'), 'imagem_atividade': get_imagem_atividade(tipo)} 
 
         return render( 
             request,  
@@ -165,8 +215,11 @@ class AtividadeCreateView(LoginRequiredMixin, View):
         if tipo not in listaAtividades:
             return redirect('psiuApp:homepage') 
         
-        imagem_atividade = 'psiuApp/img/' + tipo + '.png'
-        contexto = { 'formulario': tipoAtividadeForm(tipo), 'nomeAtividade': nomeAtividade.get(tipo, 'Não existente'), 'imagem_atividade': imagem_atividade} 
+        contexto = { 'formulario': tipoAtividadeForm(tipo), 
+                    'tipoAtividade': tipo, 
+                    'nomeAtividade': nomeAtividade.get(tipo, 'Não existente'), 
+                    'imagem_atividade': get_imagem_atividade(tipo)} 
+        
         return render(request, "psiuApp/criaAtividade.html", contexto) 
     
     def post(self, request, tipo, *args, **kwargs):
@@ -176,8 +229,13 @@ class AtividadeCreateView(LoginRequiredMixin, View):
             atividade.criador = request.user
             atividade.save() 
             return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades", args=[tipo,])) 
+        else:
+            contexto = { 'formulario': formulario, 
+                    'tipoAtividade': tipo, 
+                    'nomeAtividade': nomeAtividade.get(tipo, 'Não existente'), 
+                    'imagem_atividade': get_imagem_atividade(tipo)} 
         
-        return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades", args=[tipo,])) 
+            return render(request, "psiuApp/criaAtividade.html", contexto) 
 
 
 class AtividadeUpdateView(LoginRequiredMixin, View): 
@@ -188,8 +246,13 @@ class AtividadeUpdateView(LoginRequiredMixin, View):
         if atividade.criador != request.user:
             return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
 
-        formulario = tipoAtividadeForm(tipo_atividade)(instance=atividade) 
-        context = {'atividade': formulario, } 
+        formulario = tipoAtividadeForm(tipo_atividade)(instance=atividade)
+
+        context = {'formulario': formulario, 
+                   'nomeAtividade': nomeAtividade.get(tipo_atividade, 'Não existente'), 
+                   'pk_atividade': pk, 
+                   'imagem_atividade': get_imagem_atividade(tipo_atividade)} 
+        
         return render(request, 'psiuApp/atualizaAtividade.html', context) 
      
     def post(self, request, pk, *args, **kwargs):
@@ -204,9 +267,9 @@ class AtividadeUpdateView(LoginRequiredMixin, View):
         if formulario.is_valid(): 
             atividade = formulario.save() # cria uma pessoa com os dados do formulário 
             atividade.save()        # salva uma pessoa no banco de dados 
-            return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades", args=[tipo_atividade,])) 
+            return HttpResponseRedirect(reverse_lazy("psiuApp:atividade", args=[pk,])) 
         else: 
-            contexto = {'atividade': formulario, } 
+            contexto = {'atividade': formulario, 'pk_atividade': pk} 
             return render(request, 'psiuApp/atualizaAtividade.html', contexto) 
         
 
@@ -225,9 +288,10 @@ class AtividadeDeleteView(LoginRequiredMixin, View):
 
         if atividade.criador != request.user:
             return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
+        tipo_atividade = get_atividade_type(atividade)
 
         atividade.delete() 
-        return HttpResponseRedirect(reverse_lazy("psiuApp:homepage"))
+        return HttpResponseRedirect(reverse_lazy("psiuApp:lista-atividades", args=[tipo_atividade,]))
 
 def registro(request): 
     if request.method == 'POST': 
@@ -238,6 +302,7 @@ def registro(request):
             user = authenticate(request, username=username, password=senha)
             if user is not None:
                 login(request, user)
+                return HttpResponseRedirect(reverse_lazy("psiuApp:editar-perfil", args=[user.id,]))
             return redirect('psiuApp:homepage')
         else:
             context = {'form': formulario, } 

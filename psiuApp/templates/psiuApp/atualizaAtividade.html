@@ -1,18 +1,20 @@
 {% extends 'psiuApp/base.html' %}
+
+{% load static %} 
 {% load crispy_forms_tags %}
 
 {% block content %} 
-  <br>
-  <h4 class="text-center lh-sm">Atualização de Atividade</h4>
   <div class="container text-center">
+    <br>
+    <img src="{% static imagem_atividade %}" alt="Imagem da atividade">
+    <h4 class="text-center lh-sm">Atualização de atividade: {{ nomeAtividade }}</h4>
+  </div>
+  <div class="container text-center tam-formulario">
     <form method="POST"> 
         {% csrf_token %}
-        {{ atividade|crispy }} 
-        <button> 
-            <a href="{% url 'psiuApp:homepage' %}"  
-            style="text-decoration: none; color: black;">Cancela</a> 
-        </button> 
-        <input type="submit" value="Atualiza"> 
+        {{ formulario|crispy }} 
+        <a type="button" class="btn btn-danger ml-3" href="{% url 'psiuApp:atividade' pk=pk_atividade %}">Cancelar</a> 
+        <button type="submit" class="btn btn-success ">Atualizar</button>
     </form> 
   </div>
 {% endblock %}

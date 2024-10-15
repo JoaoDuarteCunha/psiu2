@@ -14,6 +14,7 @@
   <form action="" method="POST" class="text-center"> 
     {% csrf_token %} 
     {{ formulario|crispy }} 
+    <a type="button" class="btn btn-danger ml-3" href="{% url 'psiuApp:lista-atividades' tipo=tipoAtividade %}">Cancelar</a> 
     <button type="submit" class="btn btn-success ">Cria Atividade</button>
   </form> 
 </div>

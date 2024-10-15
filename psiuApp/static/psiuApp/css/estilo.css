@@ -43,6 +43,10 @@ h2.negrito {
     font-weight: bold;
 }
 
+h5.negrito {
+    font-weight: bold;
+}
+
 div.tam-formulario {
     max-width: 500px;
 }

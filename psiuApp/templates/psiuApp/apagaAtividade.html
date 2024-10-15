@@ -6,11 +6,8 @@
   <div class="container text-center">
     <form method="POST"> 
         {% csrf_token %} 
-        <button> 
-            <a href="{% url 'psiuApp:homepage' %}"  
-            style="text-decoration: none; color: black;">Cancela</a> 
-        </button> 
-        <input type="submit" value="Remove"> 
+        <a type="button" class="btn btn-warning ml-3" href="{% url 'psiuApp:atividade' pk=atividade.id %}">Cancelar</a> 
+        <button type="submit" class="btn btn-danger ">Remover</button>
     </form> 
   </div>
 {% endblock %}

@@ -3,40 +3,78 @@
 
 {% block content %}
 
-{{atividade}}
+<div class="container text-center">
+    <br>
+    <img src="{% static imagem_atividade %}" alt="Imagem da atividade">
+    <h4 class="text-center lh-sm">{{ nomeAtividade }}</h4>
+</div>
 
-<div>
-Vagas: {{ atividade.vagas }}
+<br>
+<a type="button" class="btn btn-primary ml-3" href="{% url 'psiuApp:lista-atividades' tipo=tipoAtividade %}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</a>
 
-{% if user == atividade.criador %}
-    <div>Sou o criador</div>
-    <a type="button" class="btn btn-warning ml-3" href="{% url 'psiuApp:atualiza-atividade' pk=atividade.id %}">Editar Atividade</a>
-    <a type="button" class="btn btn-danger ml-3" href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar Atividade</a>
-{% else %}
-    <div>Não sou o criador</div>
-    {% if user.is_authenticated %}
-        {% if botaoParticipar == True %}
-            {% if atividade.vagas > 0 %}
-                <a type="button" class="btn btn-primary ml-3" href="{% url 'psiuApp:participa-atividade' pk=atividade.id %}">Participar</a>
-                <div>Tem vagas</div>
-            {% endif %}
-        {% else %}
-        <a type="button" class="btn btn-danger ml-3" href="{% url 'psiuApp:participa-atividade' pk=atividade.id %}">Cancelar Participação</a>
-        <div>Tem vagas</div>
-        {% endif %}
-    {% endif %}
+{% if tipoAtividade == 'carona' %}
+<h4 class="text-center negrito"><b>Destino:</b> {{ atividade.localChegada }}</h4>
+<h4 class="text-center negrito"><b>Saindo de:</b> {{ atividade.localSaida }}</h4>
+{% elif tipoAtividade == 'estudos' %}
+<h4 class="text-center negrito"><b>Disciplina:</b> {{ atividade.materia }}</h4>
+{% elif tipoAtividade == 'extracurriculares' %}
+<h4 class="text-center negrito"><b>Atividade:</b> {{ atividade.atividade }}</h4>
+{% elif tipoAtividade == 'ligas' %}
+<h4 class="text-center negrito"><b>Liga:</b> {{ atividade.nome }}</h4>
+{% elif tipoAtividade == 'conhecer_pessoas' %}
+<h4 class="text-center negrito"><b>Atividade:</b> {{ atividade.atividade }}</h4>
 {% endif %}
 
-<div>
-    Criado por: {{ atividade.criador }}
+{% if tipoAtividade != 'carona' %}
+<h4 class="text-center negrito"><b>Local:</b> {{ atividade.local }}</h4>
+{% endif %}
+
+<br>
+
+<div class="text-center">
+    <h4><b>Data:</b> {{ atividade.data }} - <b>Hora:</b> {{ atividade.hora }}</h4>
+    <h4><b>Em:</b> {{ tempoAteAtividade.dias }}d {{ tempoAteAtividade.horas }}h {{ tempoAteAtividade.minutos }}m</h4>
 </div>
 
-<div>
-    Participantes: 
-    {% for participante in participantes %}
-        {{ participante.participante.username }}
-    {% endfor %}
+<br>
+<div class="text-center">
+    <h4><b>Criado por:</b> {{ atividade.criador.username }} <a class="btn btn-info" type="button" href="{% url 'psiuApp:perfil' pk=atividade.criador.id %}"><i class="fa fa-user-circle" aria-hidden="true"></i></a></h4>
+    <br>
+    {% if atividade.adicionais %}
+        <h4><b>Observações</b></h4>
+        <p>{{ atividade.adicionais }}</p>
+    {% endif %}
+    <br>
+    <div>
+        <h4><b>Participantes</b> - <b>Vagas:</b> {{ atividade.vagas }}</h4>
+        {% for participante in participantes %}
+            {{ participante.participante.username }} <a class="btn btn-info" type="button" href="{% url 'psiuApp:perfil' pk=participante.participante.id %}"><i class="fa fa-user-circle" aria-hidden="true"></i></a>
+        {% empty %}
+            <h6>Ainda não há participantes cadastrados nessa atividade</h6>
+        {% endfor %}
+        <div>
+            <br>
+            {% if user != atividade.criador %}
+                {% if user.is_authenticated %}
+                    {% if botaoParticipar == True %}
+                        {% if atividade.vagas > 0 %}
+                            <a type="button" class="btn btn-primary ml-3" href="{% url 'psiuApp:participa-atividade' pk=atividade.id %}">Participar</a>
+                        {% endif %}
+                    {% else %}
+                    <a type="button" class="btn btn-danger ml-3" href="{% url 'psiuApp:participa-atividade' pk=atividade.id %}">Cancelar Participação</a>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
 </div>
 
-</div>
+{% if user == atividade.criador %}
+    <div class="container text-center">
+        <br>
+        <a type="button" class="btn btn-warning ml-3" href="{% url 'psiuApp:atualiza-atividade' pk=atividade.id %}">Editar Atividade</a>
+        <a type="button" class="btn btn-danger ml-3" href="{% url 'psiuApp:apaga-atividade' pk=atividade.id %}">Apagar Atividade</a>
+    </div>
+{% endif %}
+
 {% endblock %}
