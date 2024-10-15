@@ -269,7 +269,10 @@ class AtividadeUpdateView(LoginRequiredMixin, View):
             atividade.save()        # salva uma pessoa no banco de dados 
             return HttpResponseRedirect(reverse_lazy("psiuApp:atividade", args=[pk,])) 
         else: 
-            contexto = {'atividade': formulario, 'pk_atividade': pk} 
+            contexto = {'formulario': formulario, 
+                   'nomeAtividade': nomeAtividade.get(tipo_atividade, 'Não existente'), 
+                   'pk_atividade': pk, 
+                   'imagem_atividade': get_imagem_atividade(tipo_atividade)} 
             return render(request, 'psiuApp/atualizaAtividade.html', contexto) 
         
 
