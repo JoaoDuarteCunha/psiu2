@@ -166,21 +166,21 @@ class PerfilView(View):
         except:
             return redirect('psiuApp:homepage')
         
-        atividades_criadas = {}
-        for atividade in listaAtividades:
-            atividades_tipo = tipoAtividadeModel(atividade).objects.filter(criador=pk)
-            for ativ in atividades_tipo:
-                ativ.tipo = atividade
+        atividades_criadas = []
+        for tipo_atividade in listaAtividades:
+            atividades = tipoAtividadeModel(tipo_atividade).objects.filter(criador=pk)
+            for atividade in atividades:
+                atividade.tipo = tipo_atividade
+            atividades_criadas.extend(atividades)
+    
+        #Pega atividades que usuário participa
+        participacoes = ParticipaAtividade.objects.filter(participante=pk)
+        atividades_participa = []
+        for participa in participacoes:
+            atividade = get_atividade(participa.atividade.id)
+            atividade.tipo = get_atividade_type(atividade)
+            atividades_participa.append(atividade)
 
-            atividades_criadas[atividade] = atividades_tipo
-        
-
-
-        atividades_participa = {}
-        #atividades_participa_dict = ParticipaAtividade.objects.filter(participante=pk)
-        #for atividade in atividades_participa:
-
-        #print(atividades_participa)
 
         contexto = {'atividades_criadas': atividades_criadas, 'atividades_participa': atividades_participa, 'perfil': perfil,} 
 

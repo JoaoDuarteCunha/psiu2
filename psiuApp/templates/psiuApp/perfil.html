@@ -5,62 +5,53 @@
 
 <div class="container text-center">
     <br>
+    <i class="fa fa-user-circle fa-5x" aria-hidden="true"></i>
     <h4 class="text-center lh-sm">Atividades de {{ perfil.username }}</h4>
 </div>
 
-<br>
-<br>
-<div class="text-center">
-    <h4 class="lh-sm">Caronas</h4>
-    <div class="card-columns">
-        {% for atividade in atividades_criadas.carona %}
-            {% include 'psiuApp/cards_personalizados.html' %}
-        {% empty %} 
-            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
-        {% endfor %}
+<div class="ml-3">
+    <h4><b>Dados de contato:</b></h4>
+    <div class="ml-4">
+        <p><b>Nome:</b> {{ user.first_name }} {{ user.last_name }}<br><b>Email:</b> {{ user.email }}</p>
     </div>
-
-    <h4 class="lh-sm">Grupos de Estudos</h4>
-    <div class="card-columns">
-        {% for atividade in atividades_criadas.estudos %}
-            {% include 'psiuApp/cards_personalizados.html' %}
-        {% empty %} 
-            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
-        {% endfor %}
-    </div>
-
-    <h4 class="lh-sm">Atividades Extracurriculares</h4>
-    <div class="card-columns">
-        {% for atividade in atividades %}
-            {% if atividade.tipo == 'extracurriculares' %}
-                {% include 'psiuApp/cards_personalizados.html' %}
-            {% endif %}
-        {% empty %} 
-            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
-        {% endfor %}
-    </div>
-
-    <h4 class="lh-sm">Ligas Acadêmicas</h4>
-    <div class="card-columns">
-        {% for atividade in atividades %}
-            {% if atividade.tipo == 'ligas' %}
-                {% include 'psiuApp/cards_personalizados.html' %}
-            {% endif %}
-        {% empty %} 
-            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
-        {% endfor %}
-    </div>
-
-    <h4 class="lh-sm">Conhecer Pessoas</h4>
-    <div class="card-columns">
-        {% for atividade in atividades %}
-            {% if atividade.tipo == 'conhecer_pessoas' %}
-                {% include 'psiuApp/cards_personalizados.html' %}
-            {% endif %}
-        {% empty %} 
-            <h2 class="negrito text-center">Não há atividades cadastradas</h2>
-        {% endfor %}
-    </div>
-
 </div>
+
+<br>
+<br>
+
+<div class="ml-3">
+    <h4><b>Atividades criadas por {{user.username}}:</b></h4>
+    <br>
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            {% for atividade in atividades_criadas %}
+                <div class="col-auto">
+                    {% include 'psiuApp/cards_personalizados.html' %}
+                </div>
+            {% empty %}
+                <h6>Usuário não criou atividades.</h6>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+
+<div class="ml-3">
+    <h4><b>Atividades que {{user.username}} participa:</b></h4>
+    <br>
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            {% for atividade in atividades_participa %}
+                <div class="col-auto">
+                    {% include 'psiuApp/cards_personalizados.html' %}
+                </div>
+            {% empty %}
+                <h6>Usuário não participa de atividades.</h6>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 {% endblock %}
